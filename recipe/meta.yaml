@@ -29,7 +29,7 @@ requirements:
 test:
   imports:
     - httpx
-    - hpack <5,>=4.0
+    - hpack >=4.0,<5
     - hyperframe <7,>=6.0
   requires:
     - pip
