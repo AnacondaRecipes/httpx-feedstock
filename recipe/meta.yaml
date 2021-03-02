@@ -30,7 +30,7 @@ test:
   imports:
     - httpx
     - hpack >=4.0,<5
-    - hyperframe <7,>=6.0
+    - hyperframe >=6.0,<7
   requires:
     - pip
   commands:
