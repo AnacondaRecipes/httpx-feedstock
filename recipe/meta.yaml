@@ -25,14 +25,10 @@ requirements:
     - idna ==2.*
     - rfc3986 >=1.3,<2
     - httpcore ==0.12.*
-    - hpack >=4.0,<5
-    - hyperframe >=6.0,<7
 
 test:
   imports:
     - httpx
-    - hpack
-    - hyperframe
   requires:
     - pip
   commands:
