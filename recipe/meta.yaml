@@ -25,6 +25,10 @@ requirements:
     - idna ==2.*
     - rfc3986 >=1.3,<2
     - httpcore >=0.13.0,<0.14.0
+    # http2 is optional
+    - h2 ==3.*
+    # brotcliffi is optional (see https://github.com/encode/httpx/blob/master/README.md)
+    #- brotlicffi==1.*
 
 test:
   imports:
