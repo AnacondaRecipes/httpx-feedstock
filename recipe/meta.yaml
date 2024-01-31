@@ -21,17 +21,21 @@ requirements:
     - m2-patch  # [win]
   host:
     - pip
-    - wheel
-    - setuptools
     - python
     - hatchling
   run:
     - python
     - certifi
-    - httpcore ==1.*
+    - httpcore >=1,<2
     - anyio
     - idna
     - sniffio
+  run_constrained:
+    - click >=8,<9
+    - pygment >=2,<3
+    - rich >=10,<14
+    - h2 >=3,<5
+    - socksio >=1,<2
 
 test:
   imports:
