@@ -22,11 +22,11 @@ requirements:
     - setuptools
     - python
   run:
-    - certifi
-    - httpcore >=0.15.0,<0.16.0
-    - idna
     - python
-    - rfc3986 >=1.3,<2
+    - certifi
+    - httpcore ==1.*
+    - anyio
+    - idna
     - sniffio
 
 test:
