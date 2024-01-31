@@ -13,7 +13,6 @@ source:
 build:
   number: 0
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
-  # skip: true  # [python_impl == 'pypy' and py==37]
   skip: True  # [py<38 or s390x]
 
 requirements:
