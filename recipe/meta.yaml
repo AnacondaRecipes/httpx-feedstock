@@ -8,12 +8,13 @@ package:
 source:
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
   sha256: 451b55c30d5185ea6b23c2c793abf9bb237d2a7dfb901ced6ff69ad37ec1dfaf
-
+  patches:
+    - patches/0001-remove-fancy-pypi-readme.patch
 build:
   number: 0
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
-  skip: true  # [python_impl == 'pypy' and py==37]
-  skip: True  # [py<36 or s390x]
+  # skip: true  # [python_impl == 'pypy' and py==37]
+  skip: True  # [py<38 or s390x]
 
 requirements:
   host:
@@ -21,6 +22,7 @@ requirements:
     - wheel
     - setuptools
     - python
+    - hatchling
   run:
     - python
     - certifi
