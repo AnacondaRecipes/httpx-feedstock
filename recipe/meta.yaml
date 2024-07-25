@@ -1,5 +1,5 @@
 {% set name = "httpx" %}
-{% set version = "0.26.0" %}
+{% set version = "0.27.0" %}
 
 package:
   name: {{ name|lower }}
@@ -7,17 +7,21 @@ package:
 
 source:
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 451b55c30d5185ea6b23c2c793abf9bb237d2a7dfb901ced6ff69ad37ec1dfaf
+  sha256: a0cb88a46f32dc874e04ee956e4c2764aba2aa228f650b06788ba6bda2962ab5
   patches:
     - patches/0001-remove-fancy-pypi-readme.patch
+
 build:
   number: 0
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  # no httpcore>=1 for s390x
   skip: True  # [py<38 or s390x]
+  entry_points:
+    - httpx = httpx:main
 
 requirements:
   build:
-    - patch  # [unix]
+    - patch     # [unix]
     - m2-patch  # [win]
   host:
     - pip
@@ -55,7 +59,7 @@ about:
     HTTPX is a fully featured HTTP client library for Python 3.
     It includes an integrated command line client, has support
     for both HTTP/1.1 and HTTP/2, and provides both sync and async APIs.
-  doc_url: https://www.encode.io/httpx/
+  doc_url: https://www.python-httpx.org
   dev_url: https://github.com/encode/httpx
 
 extra:
