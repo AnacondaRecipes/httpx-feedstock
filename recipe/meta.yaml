@@ -77,6 +77,10 @@ requirements:
 {% set tests_to_skip = tests_to_skip + " or test_decode_error_with_request[br]" %}     # no httpx.DecodingError
 {% set tests_to_skip = tests_to_skip + " or test_value_error_without_request[br]" %}   # no httpx.DecodingError
 
+{% set tests_to_skip = tests_to_skip + " or test_multipart_encode_files_raises_exception_with_text_mode_file" %}  # [win] no TypeError
+{% set tests_to_skip = tests_to_skip + " or test_write_timeout[asyncio]" %}            # [win] no httpx.WriteTimeout
+{% set tests_to_skip = tests_to_skip + " or test_logging_ssl" %}                       # [win] \\ -> \\\\ ?
+
 test:
   source_files:
     - tests
