@@ -34,6 +34,7 @@ requirements:
     - anyio
     - idna
     - sniffio
+    - brotli
   run_constrained:
     - click >=8,<9
     - pygment >=2,<3
@@ -41,13 +42,58 @@ requirements:
     - h2 >=3,<5
     - socksio >=1,<2
 
+# We're not getting the same list but the same kinds errors are in
+# https://github.com/encode/httpx/discussions/2270
+{% set tests_to_skip = "test_asgi_headers[asyncio]" %}                                 # br
+{% set tests_to_skip = tests_to_skip + " or test_asgi_headers[trio]" %}                # br
+{% set tests_to_skip = tests_to_skip + " or test_brotli" %}                            # garbage chars
+{% set tests_to_skip = tests_to_skip + " or test_multi_with_identity" %}               # garbage chars
+{% set tests_to_skip = tests_to_skip + " or test_decoding_errors[br]" %}               # no httpx.DecodingError
+{% set tests_to_skip = tests_to_skip + " or test_help" %}                              # KeyError: 'prog_name'
+{% set tests_to_skip = tests_to_skip + " or test_get" %}                               # KeyError: 'prog_name'
+{% set tests_to_skip = tests_to_skip + " or test_json" %}                              # KeyError: 'prog_name'
+{% set tests_to_skip = tests_to_skip + " or test_binary" %}                            # KeyError: 'prog_name'
+{% set tests_to_skip = tests_to_skip + " or test_redirects" %}                         # KeyError: 'prog_name'
+{% set tests_to_skip = tests_to_skip + " or test_follow_redirects" %}                  # KeyError: 'prog_name'
+{% set tests_to_skip = tests_to_skip + " or test_post" %}                              # KeyError: 'prog_name'
+{% set tests_to_skip = tests_to_skip + " or test_verbose" %}                           # KeyError: 'prog_name'
+{% set tests_to_skip = tests_to_skip + " or test_auth" %}                              # KeyError: 'prog_name'
+{% set tests_to_skip = tests_to_skip + " or test_download" %}                          # KeyError: 'prog_name'
+{% set tests_to_skip = tests_to_skip + " or test_errors" %}                            # KeyError: 'prog_name'
+{% set tests_to_skip = tests_to_skip + " or test_raw_client_header" %}                 # br
+{% set tests_to_skip = tests_to_skip + " or test_event_hooks" %}                       # br
+{% set tests_to_skip = tests_to_skip + " or test_async_event_hooks[asyncio]" %}        # br
+{% set tests_to_skip = tests_to_skip + " or test_async_event_hooks[trio]" %}           # br
+{% set tests_to_skip = tests_to_skip + " or test_event_hooks_with_redirect" %}         # br
+{% set tests_to_skip = tests_to_skip + " or test_client_header" %}                     # br
+{% set tests_to_skip = tests_to_skip + " or test_header_merge" %}                      # br
+{% set tests_to_skip = tests_to_skip + " or test_header_merge_conflicting_headers" %}  # br
+{% set tests_to_skip = tests_to_skip + " or test_header_update" %}                     # br
+{% set tests_to_skip = tests_to_skip + " or test_remove_default_header" %}             # br
+{% set tests_to_skip = tests_to_skip + " or test_host_with_auth_and_port_in_url" %}    # br
+{% set tests_to_skip = tests_to_skip + " or test_host_with_non_default_port_in_url" %} # br
+{% set tests_to_skip = tests_to_skip + " or test_socks_proxy_deprecated" %}            # socksio
+{% set tests_to_skip = tests_to_skip + " or test_socks_proxy" %}                       # socksio
+{% set tests_to_skip = tests_to_skip + " or test_decode_error_with_request[br]" %}     # no httpx.DecodingError
+{% set tests_to_skip = tests_to_skip + " or test_value_error_without_request[br]" %}   # no httpx.DecodingError
+
 test:
+  source_files:
+    - tests
   imports:
     - httpx
   requires:
     - pip
+    - pytest
+    - brotli
+    - chardet
+    - trio
+    - trustme
+    - uvicorn
+    - h2
   commands:
     - pip check
+    - pytest -vv tests -k "not ({{ tests_to_skip }})"
 
 about:
   home: https://github.com/encode/httpx
