@@ -41,25 +41,20 @@ requirements:
     - h2 >=3,<5
     - socksio >=1,<2
 
-# We're not getting the same list but the same kinds errors are in
-# https://github.com/encode/httpx/discussions/2270
 {% set tests_to_skip = "" %}
-{% set tests_to_skip = tests_to_skip + " test_help" %}                              # KeyError: 'prog_name'
-{% set tests_to_skip = tests_to_skip + " or test_get" %}                               # KeyError: 'prog_name'
-{% set tests_to_skip = tests_to_skip + " or test_json" %}                              # KeyError: 'prog_name'
-{% set tests_to_skip = tests_to_skip + " or test_binary" %}                            # KeyError: 'prog_name'
-{% set tests_to_skip = tests_to_skip + " or test_redirects" %}                         # KeyError: 'prog_name'
-{% set tests_to_skip = tests_to_skip + " or test_follow_redirects" %}                  # KeyError: 'prog_name'
-{% set tests_to_skip = tests_to_skip + " or test_post" %}                              # KeyError: 'prog_name'
-{% set tests_to_skip = tests_to_skip + " or test_verbose" %}                           # KeyError: 'prog_name'
-{% set tests_to_skip = tests_to_skip + " or test_auth" %}                              # KeyError: 'prog_name'
-{% set tests_to_skip = tests_to_skip + " or test_download" %}                          # KeyError: 'prog_name'
-{% set tests_to_skip = tests_to_skip + " or test_errors" %}                            # KeyError: 'prog_name'
-{% set tests_to_skip = tests_to_skip + " or test_socks_proxy_deprecated" %}            # socksio
-{% set tests_to_skip = tests_to_skip + " or test_socks_proxy" %}                       # socksio
-{% set tests_to_skip = tests_to_skip + " or test_multipart_encode_files_raises_exception_with_text_mode_file" %}  # [win] no TypeError
-{% set tests_to_skip = tests_to_skip + " or test_write_timeout[asyncio]" %}            # [win] no httpx.WriteTimeout
-{% set tests_to_skip = tests_to_skip + " or test_logging_ssl" %}                       # [win] \\ -> \\\\ ?
+# skip tests using socksio, optional dependency, not available for all platforms
+{% set tests_to_skip = tests_to_skip + " test_socks_proxy_deprecated" %}               
+{% set tests_to_skip = tests_to_skip + " or test_socks_proxy" %}
+# skip some tests for Windows
+#
+# no TypeError raised
+{% set tests_to_skip = tests_to_skip + " or test_multipart_encode_files_raises_exception_with_text_mode_file" %}  # [win]
+# no httpx.WriteTimeout
+{% set tests_to_skip = tests_to_skip + " or test_write_timeout[asyncio]" %}            # [win]
+# paths with "\\\\" instead of "\\"
+{% set tests_to_skip = tests_to_skip + " or test_logging_ssl" %}                       # [win]
+# "tests\\test_utils.py" != "tests/test_utils.py"
+{% set tests_to_skip = tests_to_skip + " or test_get_ssl_cert_file" %}                 # [win]
 
 test:
   source_files:
@@ -77,8 +72,13 @@ test:
     - trustme
     - uvicorn
     - h2
+    # [cli testing] - pygment unavailable but optional
+    - click
+    # - pygment
+    - rich
   commands:
     - pip check
+    - httpx --help
     - pytest -vv tests -k "not ({{ tests_to_skip }})"
 
 about:
