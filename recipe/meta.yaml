@@ -78,6 +78,7 @@ test:
     - rich
   commands:
     - pip check
+    - set PYTHONIOENCODING=utf8  # [win]
     - httpx --help
     - pytest -vv tests -k "not ({{ tests_to_skip }})"
 
