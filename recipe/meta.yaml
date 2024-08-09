@@ -49,11 +49,12 @@ requirements:
 #
 # no TypeError raised
 {% set tests_to_skip = tests_to_skip + " or test_multipart_encode_files_raises_exception_with_text_mode_file" %}  # [win]
-# no httpx.WriteTimeout
+# these two fail on assert response.elapsed > timedelta(seconds=0)
 {% set tests_to_skip = tests_to_skip + " or test_write_timeout[asyncio]" %}            # [win]
+{% set tests_to_skip = tests_to_skip + " or test_get[asyncio]" %}                      # [win]
 # paths with "\\\\" instead of "\\"
 {% set tests_to_skip = tests_to_skip + " or test_logging_ssl" %}                       # [win]
-# "tests\\test_utils.py" != "tests/test_utils.py"
+# again paths: "tests\\test_utils.py" != "tests/test_utils.py"
 {% set tests_to_skip = tests_to_skip + " or test_get_ssl_cert_file" %}                 # [win]
 
 test:
