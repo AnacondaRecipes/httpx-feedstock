@@ -1,5 +1,5 @@
 {% set name = "httpx" %}
-{% set version = "0.27.0" %}
+{% set version = "0.28.1" %}
 
 package:
   name: {{ name|lower }}
@@ -7,43 +7,38 @@ package:
 
 source:
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: a0cb88a46f32dc874e04ee956e4c2764aba2aa228f650b06788ba6bda2962ab5
-  patches:
-    - patches/0001-remove-fancy-pypi-readme.patch
+  sha256: 75e98c5f16b0f35b567856f597f06ff2270a374470a5c2392242528e3e3e42fc
 
 build:
   number: 0
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
-  # no httpcore>=1 for s390x
-  skip: True  # [py<38 or s390x]
+  skip: True  # [py<38]
   entry_points:
     - httpx = httpx:main
 
 requirements:
-  build:
-    - patch     # [unix]
-    - m2-patch  # [win]
   host:
     - pip
     - python
     - hatchling
+    - hatch-fancy-pypi-readme
   run:
     - python
     - certifi
-    - httpcore >=1.0.0,<2.0.0a0
+    - httpcore ==1.*
     - anyio
     - idna
-    - sniffio
   run_constrained:
     - click >=8.0.0,<9.0.0a0
-    - pygment >=2.0.0,<3.0.0a0
+    - pygments >=2.0.0,<3.0.0a0
     - rich >=10.0.0,<14.0.0a0
     - h2 >=3.0.0,<5.0.0a0
     - socksio >=1.0.0,<2.0.0a0
+    - zstandard >=0.18.0
 
 {% set tests_to_skip = "" %}
 # skip tests using socksio, optional dependency, not available for all platforms
-{% set tests_to_skip = tests_to_skip + " test_socks_proxy_deprecated" %}               
+{% set tests_to_skip = tests_to_skip + " test_socks_proxy_deprecated" %}
 {% set tests_to_skip = tests_to_skip + " or test_socks_proxy" %}
 # skip some tests for Windows
 #
@@ -52,7 +47,6 @@ requirements:
 # these two fail on assert response.elapsed > timedelta(seconds=0)
 {% set tests_to_skip = tests_to_skip + " or test_write_timeout[asyncio]" %}            # [win]
 {% set tests_to_skip = tests_to_skip + " or test_get[asyncio]" %}                      # [win]
-# paths with "\\\\" instead of "\\"
 {% set tests_to_skip = tests_to_skip + " or test_logging_ssl" %}                       # [win]
 # again paths: "tests\\test_utils.py" != "tests/test_utils.py"
 {% set tests_to_skip = tests_to_skip + " or test_get_ssl_cert_file" %}                 # [win]
@@ -75,13 +69,14 @@ test:
     - h2
     # [cli testing] - pygment unavailable but optional
     - click
+    - zstandard
     # - pygment
     - rich
   commands:
     - pip check
     # Running the command "httpx --help" from a Windows terminal works.
     # PYTHONIOENCODING=utf8
-    # Solves 
+    # Solves
     #    "UnicodeEncodeError: 'charmap' codec can't encode character"
     # during tests.
     - set PYTHONIOENCODING=utf8  # [win]
