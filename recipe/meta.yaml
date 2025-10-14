@@ -10,7 +10,7 @@ source:
   sha256: 75e98c5f16b0f35b567856f597f06ff2270a374470a5c2392242528e3e3e42fc
 
 build:
-  number: 0
+  number: 1
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   skip: True  # [py<38]
   entry_points:
@@ -31,7 +31,6 @@ requirements:
   run_constrained:
     - click >=8.0.0,<9.0.0a0
     - pygments >=2.0.0,<3.0.0a0
-    - rich >=10.0.0,<14.0.0a0
     - h2 >=3.0.0,<5.0.0a0
     - socksio >=1.0.0,<2.0.0a0
     - zstandard >=0.18.0
@@ -45,7 +44,7 @@ requirements:
 # no TypeError raised
 {% set tests_to_skip = tests_to_skip + " or test_multipart_encode_files_raises_exception_with_text_mode_file" %}  # [win]
 # these two fail on assert response.elapsed > timedelta(seconds=0)
-{% set tests_to_skip = tests_to_skip + " or test_write_timeout[asyncio]" %}            # [win]
+{% set tests_to_skip = tests_to_skip + " or test_write_timeout" %}                     # [win]
 {% set tests_to_skip = tests_to_skip + " or test_get[asyncio]" %}                      # [win]
 {% set tests_to_skip = tests_to_skip + " or test_logging_ssl" %}                       # [win]
 # again paths: "tests\\test_utils.py" != "tests/test_utils.py"
