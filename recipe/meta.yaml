@@ -57,7 +57,9 @@ test:
     - httpx
   requires:
     - pip
-    - pytest
+    # pytest 9.1 captures non-propagating loggers, so uvicorn.access
+    # records break tests/test_utils.py logging assertions.
+    - pytest <9.1
     # You want brotli-python here rather than just the brotli that
     # "import brotli" might imply
     - brotli-python
